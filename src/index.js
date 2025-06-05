@@ -2,7 +2,28 @@ const todoForm = document.querySelector('form');
 const todoInput = document.getElementById('todo-input');
 const todoListUL = document.getElementById('todo-list');
 
+class Page {
+    constructor(name, todos, background) {
+        this.name = name;
+        this.todos = todos;
+        this.background = background;
+    }
+    
+    toJSON() {
+        return {
+            name: this.name,
+            todos: this.todos,
+            background: this.background
+        };
+    }
+}
+
 let allTodos = getTodos();
+
+const dailyPage = new Page("Daily", allTodos, "daily.jpg"); 
+const goalsPage = new Page("Goals", allTodos, "goals.jpg");
+
+loadPage(dailyPage);
 updateTodoList();
 
 todoForm.addEventListener('submit', function(e){
@@ -34,6 +55,22 @@ function updateTodoList() {
         todoItem = createTodoItem(todo, todoIndex);
         todoListUL.append(todoItem);
     })
+}
+
+function createPage(pageJSON) {
+    const obj = JSON.parse(pageJSON);
+
+    return new Page(obj.name, obj.todos, obj.background);    
+}
+
+// loads the page onto the screen
+function loadPage(page) {
+    const title = document.getElementById("title");
+
+    title.textContent = page.name;
+
+    const body = document.querySelector("body");
+    body.style.backgroundImage = `url("../assets/${page.background}")`;
 }
 
 function createTodoItem(todo, todoIndex) {
@@ -82,11 +119,11 @@ function deleteTodoItem(todoIndex) {
 
 function saveTodos() {
     const todosJSON = JSON.stringify(allTodos);
-    localStorage.setItem("goals", todosJSON);
+    localStorage.setItem("daily", todosJSON);
 }
 
 function getTodos() {
-    const todos = localStorage.getItem("goals") || "[]";
+    const todos = localStorage.getItem("daily") || "[]";
 
     return JSON.parse(todos);
 }
