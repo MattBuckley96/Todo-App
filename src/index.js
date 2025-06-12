@@ -3,10 +3,10 @@ const todoInput = document.getElementById('todo-input');
 const todoListUL = document.getElementById('todo-list');
 
 class Page {
-    constructor(name, todos, background) {
+    constructor(name, background) {
         this.name = name;
-        this.todos = todos;
         this.background = background;
+        this.getTodos();
     }
     
     toJSON() {
@@ -16,15 +16,45 @@ class Page {
             background: this.background
         };
     }
+
+    getTodos() {
+        const todos = localStorage.getItem(this.name.toLowerCase()) || "[]";
+
+        this.todos = JSON.parse(todos); 
+    }
+
+    saveTodos() {
+        const todosJSON = JSON.stringify(this.todos);
+        localStorage.setItem(this.name.toLowerCase(), todosJSON);
+    }
+
+    deleteTodoItem(todoIndex) {
+        this.todos = this.todos.filter((_, i)=> i !== todoIndex);
+        this.saveTodos();
+        updateTodoList();
+    }
+
+    show() {
+        const title = document.getElementById("title");
+
+        title.textContent = this.name;
+
+        const body = document.querySelector("body");
+        body.style.backgroundImage = `url("../assets/${this.background}")`;
+    }
 }
 
-let allTodos = getTodos();
+const dailyPage = new Page("Daily", "daily.jpg"); 
+const goalsPage = new Page("Goals", "goals.jpg");
 
-const dailyPage = new Page("Daily", allTodos, "daily.jpg"); 
-const goalsPage = new Page("Goals", allTodos, "goals.jpg");
+let pages = [ dailyPage, goalsPage ];
 
-loadPage(dailyPage);
+let currentPage = pages[0];
+
+currentPage.show();
 updateTodoList();
+
+loadMenu(pages);
 
 todoForm.addEventListener('submit', function(e){
     e.preventDefault();
@@ -43,15 +73,15 @@ function addTodo() {
         completed: false
     }
 
-    allTodos.push(todoObject);
+    currentPage.todos.push(todoObject);
     updateTodoList();
-    saveTodos();
+    currentPage.saveTodos();
     todoInput.value = "";
 }
 
 function updateTodoList() {
     todoListUL.innerHTML = "";
-    allTodos.forEach((todo, todoIndex)=>{
+    currentPage.todos.forEach((todo, todoIndex)=>{
         todoItem = createTodoItem(todo, todoIndex);
         todoListUL.append(todoItem);
     })
@@ -61,16 +91,6 @@ function createPage(pageJSON) {
     const obj = JSON.parse(pageJSON);
 
     return new Page(obj.name, obj.todos, obj.background);    
-}
-
-// loads the page onto the screen
-function loadPage(page) {
-    const title = document.getElementById("title");
-
-    title.textContent = page.name;
-
-    const body = document.querySelector("body");
-    body.style.backgroundImage = `url("../assets/${page.background}")`;
 }
 
 function createTodoItem(todo, todoIndex) {
@@ -98,32 +118,38 @@ function createTodoItem(todo, todoIndex) {
 
     const deleteButton = todoLI.querySelector(".delete-button");
     deleteButton.addEventListener("click", ()=>{
-        deleteTodoItem(todoIndex);
+        currentPage.deleteTodoItem(todoIndex);
     })
 
     const checkbox = todoLI.querySelector("input");
     checkbox.addEventListener("change", ()=> {
-        allTodos[todoIndex].completed = checkbox.checked;
-        saveTodos();
+        currentPage.todos[todoIndex].completed = checkbox.checked;
+        currentPage.saveTodos();
     })
 
     checkbox.checked = todo.completed;
     return todoLI;
 }
 
-function deleteTodoItem(todoIndex) {
-    allTodos = allTodos.filter((_, i)=> i !== todoIndex);
-    saveTodos();
-    updateTodoList();
-}
+function loadMenu(pages) {
+    for (let i = 0; i < pages.length; i++) {
+        const menu = document.getElementById("menu"); 
+        let menuLI = document.createElement("li");
+        
+        menuLI.className = "menu";
 
-function saveTodos() {
-    const todosJSON = JSON.stringify(allTodos);
-    localStorage.setItem("daily", todosJSON);
-}
+        let link = document.createElement("a");
+        link.id = `${i}`;
+        link.href = "#";
+        link.textContent = pages[i].name;
 
-function getTodos() {
-    const todos = localStorage.getItem("daily") || "[]";
+        menu.append(menuLI);
+        menuLI.append(link);
 
-    return JSON.parse(todos);
+        link.addEventListener("click", ()=>{
+            currentPage = pages[link.id];
+            currentPage.show();
+            updateTodoList();
+        });
+    }
 }
