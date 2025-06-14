@@ -2,48 +2,6 @@ const todoForm = document.querySelector('form');
 const todoInput = document.getElementById('todo-input');
 const todoListUL = document.getElementById('todo-list');
 
-class Page {
-    constructor(name, background) {
-        this.name = name;
-        this.background = background;
-        this.getTodos();
-    }
-    
-    toJSON() {
-        return {
-            name: this.name,
-            todos: this.todos,
-            background: this.background
-        };
-    }
-
-    getTodos() {
-        const todos = localStorage.getItem(this.name.toLowerCase()) || "[]";
-
-        this.todos = JSON.parse(todos); 
-    }
-
-    saveTodos() {
-        const todosJSON = JSON.stringify(this.todos);
-        localStorage.setItem(this.name.toLowerCase(), todosJSON);
-    }
-
-    deleteTodoItem(todoIndex) {
-        this.todos = this.todos.filter((_, i)=> i !== todoIndex);
-        this.saveTodos();
-        updateTodoList();
-    }
-
-    show() {
-        const title = document.getElementById("title");
-
-        title.textContent = this.name;
-
-        const body = document.querySelector("body");
-        body.style.backgroundImage = `url("../assets/${this.background}")`;
-    }
-}
-
 const dailyPage = new Page("Daily", "daily.jpg"); 
 const goalsPage = new Page("Goals", "goals.jpg");
 
@@ -132,8 +90,22 @@ function createTodoItem(todo, todoIndex) {
 }
 
 function loadMenu(pages) {
+    const menu = document.getElementById("menu"); 
+
+    menu.innerHTML = `
+        <button id="add-page-button" class="menu-button">
+            <svg fill="transparent" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+                <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+            </svg>
+        </button>
+    `
+
+    let button = document.getElementById("add-page-button");
+    button.addEventListener('click', ()=>{
+        newPage();
+    });
+
     for (let i = 0; i < pages.length; i++) {
-        const menu = document.getElementById("menu"); 
         let menuLI = document.createElement("li");
         
         menuLI.className = "menu";
@@ -152,4 +124,8 @@ function loadMenu(pages) {
             updateTodoList();
         });
     }
+}
+
+function newPage() {
+    window.location.href = "new-page.html";
 }
