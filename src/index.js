@@ -163,6 +163,10 @@ function loadMenu(pages) {
 function deletePage(index) {
     const page = pages[index];
 
+    if (!confirm(`"Delete Page "${page.name}"?\n This cannot be undone.`)) {
+        return;
+    }
+
     // remove todos
     localStorage.removeItem(page.name.toLowerCase());
 

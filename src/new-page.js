@@ -23,7 +23,7 @@ pageForm.addEventListener('submit', function(e){
     }
 
     // TODO: styling
-    if (!confirm("Create Page?"))
+    if (!confirm(`Create Page "${name}"?`))
     {
         return;
     }
