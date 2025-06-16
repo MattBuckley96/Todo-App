@@ -81,6 +81,19 @@ form{
 .delete-button:hover svg{
     fill: #ff0033;
 }
+
+/* TODO: style better */
+.delete-page-button{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.delete-page-button svg{
+    transition: 200ms ease;
+}
+.delete-page-button:hover svg{
+    fill: #ff0033;
+}
 .custom-checkbox{
     border: 2px solid var(--accent-color);
     border-radius: 50%;
@@ -121,4 +134,7 @@ input[type="checkbox"]{
         margin-top: 50px;
         font-size: 15vw;
     }
+}
+#edit-page-button{
+    left: 60px;
 }

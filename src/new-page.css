@@ -1,6 +1,0 @@
-/* HACK: dummy link so menu looks good */
-a, a:link, a:visited, a:active, a:hover{
-    color: var(--background);
-    text-decoration: none;
-    pointer-events: none;
-}

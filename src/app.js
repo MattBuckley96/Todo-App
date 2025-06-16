@@ -16,7 +16,7 @@ const createWindow = () => {
 
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
-  // mainWindow.setMenu(null);
+  mainWindow.setMenu(null);
 };
 
 app.whenReady().then(() => {

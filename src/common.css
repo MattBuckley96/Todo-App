@@ -78,3 +78,8 @@ button.menu-button svg{
 button.menu-button:hover svg{
     cursor: pointer;
 }
+a.dummy, a.dummy:link, a.dummy:visited, a.dummy:active, a.dummy:hover{
+    color: var(--background);
+    text-decoration: none;
+    pointer-events: none;
+}

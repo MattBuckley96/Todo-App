@@ -15,6 +15,22 @@ pageForm.addEventListener('submit', function(e){
         return;
     }
 
-    let page = new Page(name, "daily.jpg");
-    console.log(page);
+    const backgroundInput = document.getElementById("background-input");
+    const background = backgroundInput.value.trim();
+
+    if (background.length <= 0) {
+        return;
+    }
+
+    // TODO: styling
+    if (!confirm("Create Page?"))
+    {
+        return;
+    }
+
+    let page = new Page(name, background);
+
+    let pages = loadPages();
+    pages.push(page);
+    savePages(pages);
 });

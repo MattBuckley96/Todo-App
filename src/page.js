@@ -39,3 +39,22 @@ class Page {
         body.style.backgroundImage = `url("../assets/${this.background}")`;
     }
 }
+
+function savePages(pages) {
+    let pagesJSON = JSON.stringify(pages.map(page => ({
+        name: page.name,
+        background: page.background
+    })));
+
+    localStorage.setItem('pages', pagesJSON);
+}
+
+function loadPages() {
+    const pageData = localStorage.getItem("pages") || "[]";
+
+    if (pageData != "[]") {
+        return JSON.parse(pageData).map(obj => new Page(obj.name, obj.background));
+    }
+
+    return [ new Page("Daily", "daily.jpg"), new Page("Goals", "goals.jpg") ];
+}
